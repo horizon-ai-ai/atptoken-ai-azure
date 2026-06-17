@@ -2,6 +2,7 @@ User-Agent: Googlebot
 User-Agent: Bingbot
 User-Agent: OAI-SearchBot
 Allow: /
+Disallow: /api/
 Disallow: /console/
 Disallow: /signin/
 Disallow: /signup/
@@ -17,6 +18,7 @@ Disallow: /
 
 User-Agent: *
 Allow: /
+Disallow: /api/
 Disallow: /console/
 Disallow: /signin/
 Disallow: /signup/
