@@ -1,12 +1,12 @@
 1:"$Sreact.fragment"
-2:I[6331,["/_next/static/chunks/1n9razgknn72c.js","/_next/static/chunks/14mrh2-p_w84d.js","/_next/static/chunks/0x2n8zcfwy8jz.js","/_next/static/chunks/2mhavswhbhekr.js"],"PublicNav"]
-3:I[17706,["/_next/static/chunks/1n9razgknn72c.js","/_next/static/chunks/14mrh2-p_w84d.js","/_next/static/chunks/0x2n8zcfwy8jz.js","/_next/static/chunks/2mhavswhbhekr.js"],"Hero"]
-4:I[5142,["/_next/static/chunks/1n9razgknn72c.js","/_next/static/chunks/14mrh2-p_w84d.js","/_next/static/chunks/0x2n8zcfwy8jz.js","/_next/static/chunks/2mhavswhbhekr.js"],"HowItWorks"]
-5:I[27225,["/_next/static/chunks/1n9razgknn72c.js","/_next/static/chunks/14mrh2-p_w84d.js","/_next/static/chunks/0x2n8zcfwy8jz.js","/_next/static/chunks/2mhavswhbhekr.js"],"Pillars"]
-6:I[92369,["/_next/static/chunks/1n9razgknn72c.js","/_next/static/chunks/14mrh2-p_w84d.js","/_next/static/chunks/0x2n8zcfwy8jz.js","/_next/static/chunks/2mhavswhbhekr.js"],"Features"]
-7:I[55242,["/_next/static/chunks/1n9razgknn72c.js","/_next/static/chunks/14mrh2-p_w84d.js","/_next/static/chunks/0x2n8zcfwy8jz.js","/_next/static/chunks/2mhavswhbhekr.js"],"CtaCards"]
-8:I[35514,["/_next/static/chunks/1n9razgknn72c.js","/_next/static/chunks/14mrh2-p_w84d.js","/_next/static/chunks/0x2n8zcfwy8jz.js","/_next/static/chunks/2mhavswhbhekr.js"],"Footer"]
-9:I[97367,["/_next/static/chunks/1n9razgknn72c.js","/_next/static/chunks/14mrh2-p_w84d.js"],"OutletBoundary"]
+2:I[19434,["/_next/static/chunks/3dt7j2eib9ttu.js","/_next/static/chunks/1ow0-vguxwxov.js","/_next/static/chunks/06_2y6rlgd7ts.js","/_next/static/chunks/3de4kki_p6cbr.js"],"PublicNav"]
+3:I[97154,["/_next/static/chunks/3dt7j2eib9ttu.js","/_next/static/chunks/1ow0-vguxwxov.js","/_next/static/chunks/06_2y6rlgd7ts.js","/_next/static/chunks/3de4kki_p6cbr.js"],"Hero"]
+4:I[95723,["/_next/static/chunks/3dt7j2eib9ttu.js","/_next/static/chunks/1ow0-vguxwxov.js","/_next/static/chunks/06_2y6rlgd7ts.js","/_next/static/chunks/3de4kki_p6cbr.js"],"HowItWorks"]
+5:I[44794,["/_next/static/chunks/3dt7j2eib9ttu.js","/_next/static/chunks/1ow0-vguxwxov.js","/_next/static/chunks/06_2y6rlgd7ts.js","/_next/static/chunks/3de4kki_p6cbr.js"],"Pillars"]
+6:I[45645,["/_next/static/chunks/3dt7j2eib9ttu.js","/_next/static/chunks/1ow0-vguxwxov.js","/_next/static/chunks/06_2y6rlgd7ts.js","/_next/static/chunks/3de4kki_p6cbr.js"],"Features"]
+7:I[72742,["/_next/static/chunks/3dt7j2eib9ttu.js","/_next/static/chunks/1ow0-vguxwxov.js","/_next/static/chunks/06_2y6rlgd7ts.js","/_next/static/chunks/3de4kki_p6cbr.js"],"CtaCards"]
+8:I[52761,["/_next/static/chunks/3dt7j2eib9ttu.js","/_next/static/chunks/1ow0-vguxwxov.js","/_next/static/chunks/06_2y6rlgd7ts.js","/_next/static/chunks/3de4kki_p6cbr.js"],"Footer"]
+9:I[34029,["/_next/static/chunks/3dt7j2eib9ttu.js","/_next/static/chunks/1ow0-vguxwxov.js"],"OutletBoundary"]
 a:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"flex min-h-screen flex-col bg-white text-neutral-900","children":[["$","$L2",null,{}],["$","main",null,{"className":"flex-1","children":[["$","$L3",null,{}],["$","$L4",null,{}],["$","$L5",null,{}],["$","$L6",null,{}],["$","$L7",null,{}]]}],["$","$L8",null,{}]]}],[["$","script","script-0",{"src":"/_next/static/chunks/0x2n8zcfwy8jz.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/2mhavswhbhekr.js","async":true}]],["$","$L9",null,{"children":["$","$a",null,{"name":"Next.MetadataOutlet","children":"$@b"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"k2i6vT62WKMksgpbqbsMS"}
+0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"flex min-h-screen flex-col bg-white text-neutral-900","children":[["$","$L2",null,{}],["$","main",null,{"className":"flex-1","children":[["$","$L3",null,{}],["$","$L4",null,{}],["$","$L5",null,{}],["$","$L6",null,{}],["$","$L7",null,{}]]}],["$","$L8",null,{}]]}],[["$","script","script-0",{"src":"/_next/static/chunks/06_2y6rlgd7ts.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/3de4kki_p6cbr.js","async":true}]],["$","$L9",null,{"children":["$","$a",null,{"name":"Next.MetadataOutlet","children":"$@b"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"4CSZrzEt9bfTxLdR-51Mg"}
 b:null
