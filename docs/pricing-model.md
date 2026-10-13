@@ -69,7 +69,7 @@ Text: cost = input tokens × input rate + cache-read tokens × cache-read rate +
 | `gpt-5.5` | 5 | — | 30 |
 | `claude-opus-4-8` | 5 | 0.5 | 25 |
 | `claude-opus-4-7` | 5 | 0.5 | 25 |
-| `claude-sonnet-5` | 3 | 0.3 | 15 |
+| `claude-sonnet-5` | 2 | 0.2 | 10 |
 | `gpt-5.6-terra` | 2.5 | — | 15 |
 | `claude-sonnet-4-6` | 3 | 0.3 | 15 |
 | `gpt-5.4` | 2.5 | — | 15 |
