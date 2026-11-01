@@ -4,22 +4,28 @@
 
 任何会说 Anthropic 或 OpenAI wire format 的 agent 都能跑在项目（project）密钥上。真正要填的只有三个值：Gateway 的 base URL、一把 `atp-` 开头的密钥，以及该项目已启用的模型 ID。这一页涵盖我们完整记录的两个 agent（Claude Code 与 Codex CLI）、其他工具共用的通用规则，以及三个套用通用规则会坏掉的工具。
 
+agent 也可以保留原本的模型，改加上 ATP 的 MCP 服务器 `atptoken-api-docs`：它提供 API 文档、实时查模型、提交视频任务前的检查。加上它不需要密钥：
+
+```
+claude mcp add --transport http atptoken-api-docs https://mcp.atptoken.ai/mcp
+codex mcp add atptoken-api-docs --url https://mcp.atptoken.ai/mcp
+```
+
+[connect.md](https://atptoken.ai/zh-cn/connect.md/) 会带 agent 走完这两种接法。
+
 ## 贴给你的 agent
 
-多数人不会自己一格一格填，而是直接叫 agent 去接。下面这段就是为了整段复制而写的，把 `<你的工具名>` 换成你要接的工具即可。
+多数人不会自己一格一格填，而是直接叫 agent 去接。下面这一行原样贴上就好：agent 会自己判断是哪个工具、没有密钥才跟你要、列出这把密钥能用的模型，再把设置写好。
 
 ```
-Read https://atptoken.ai/docs/agents.md and follow it to connect my <your tool> to ATP Token.
-My key is in the ATP_API_KEY environment variable.
-First call GET https://api.atptoken.ai/v1/models to see which models are available,
-then pick one from that list and configure it.
+Follow https://atptoken.ai/connect.md to connect my AI tool to ATP Token.
 ```
 
-指令维持英文、指向英文版页面，是因为那份纯 markdown 是给机器读的正规来源；你要改成中文照样可以。
+指令维持英文，是因为 connect.md 是写给机器照做的正规来源；你要改成中文照样可以，agent 会用你的语言回你。
 
 > **每一页都有纯 markdown 版本**
 >
-> 任何文件网址后面加上 `.md`，就会拿到这一页的 markdown 原始码——没有页面外框、不需要剖析 HTML。上面那段指令要 agent 读的就是它。
+> 任何文件网址后面加上 `.md`，就会拿到这一页的 markdown 原始码——没有页面外框、不需要剖析 HTML。
 
 ## 第一步永远是 GET /v1/models
 
@@ -72,7 +78,7 @@ model_provider = "atp"
 name = "ATP"
 base_url = "https://api.atptoken.ai/v1"
 env_key = "ATP_API_KEY"
-wire_api = "chat"
+wire_api = "responses"
 ```
 
 ```
