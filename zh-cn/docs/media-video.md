@@ -33,6 +33,7 @@
 | 阿里（preview） | `happyhorse-1.1-t2v`、`happyhorse-1.1-i2v` | 3–15 秒；浮水印默认开启（可传 `watermark: false` 关闭） |
 | 阿里（preview） | `happyhorse-1.1-r2v` | 最多 9 张参考图；3–15 秒；浮水印默认开启 |
 | 阿里（preview） | `happyhorse-1.0-video-edit` | 来源影片 3–60 秒＋最多 5 张参考图；浮水印默认开启 |
+| 阿里（preview） | `wan-3-0-video`、`wan-3-0-video-pro` | 扁平请求，不用 `content[]`，见下方 Wan 3.0 |
 
 > **先确认模型与项目权限**
 >
@@ -89,23 +90,19 @@ curl https://api.atptoken.ai/omni/media/v1/contents/generations/tasks \
 >
 > 图片端点收到 `asset://` 引用时，会在生成阶段回 `provider_error / generation_failed`。
 
-### 引用上传的文件
+### 使用本机文件
 
-要引用自己上传的文件，先把它换成公开 URL：
+`/v1/files` 上传的文件不能当 `url`：它的 `id` 不是媒体引用，`GET /v1/files/{id}` 回传的是文件内容，不是 URL。请把文件放到供应商免验证就能抓取的公开 `https://` URL，再传入那个 URL：
 
 ```
-# 1. upload — the response key is `id` (an_<ULID>), not gw_file_id
-curl -s https://api.atptoken.ai/v1/files \
-  -H "Authorization: Bearer atp-..." -F "file=@./first-frame.png"
-# → 201 { "id": "an_01H...", "object": "file", "bytes": 152340, ... }
-
-# 2. resolve to a no-auth URL — read the 302 Location, do NOT follow it
-curl -sD - -o /dev/null https://api.atptoken.ai/v1/files/an_01H... \
-  -H "Authorization: Bearer atp-..." | grep -i '^location:'
-# → location: https://<object-store>/gateway-files/...?<presigned>  (~15-minute TTL)
+{
+  "type": "image_url",
+  "image_url": { "url": "https://example.com/first-frame.png" },
+  "role": "first_frame"
+}
 ```
 
-把那个 `Location` 值当 `url` 用。它免验证即可下载——正是上游供应商需要的——但约 15 分钟就过期，所以请在建立任务前才解析，不要快取。
+在 Seedance 上，也可以把这个 URL 登记成素材，改传 `asset://` URI，做法见下一节。
 
 ### 引用登记的素材
 
@@ -123,6 +120,8 @@ Seedance 也接受通过素材 API 登记的图片。登记图片、等到状态
 ```
 
 URI 只放在 `image_url.url`，区块没有顶层 `url`。`/v1/files` 的 id 不是素材 URI。
+
+真人照片的公开 URL 可能被拒，回 `400 may contain real person`。请把图片登记成素材，改传 `AssetUri`。`seedance-2-0-fast` 只接受直接网址，所以不要用它处理真人照片。
 
 ## 轮询至终态
 
@@ -240,6 +239,38 @@ curl https://api.atptoken.ai/omni/media/v1/tasks/cgt_... -H "Authorization: Bear
 - **Prompt 长度**：5,000 字元（HappyHorse 中文 2,500 字）。
 - 这些模型尚未支持 `generate_audio`。
 
+### Wan 3.0 使用扁平请求
+
+`wan-3-0-video` 和 `wan-3-0-video-pro` 不吃 `content[]`，提示词和素材都放在顶层栏位。`content` 阵列会被丢掉，内容因此变空时回 `missing_prompt_or_image`。
+
+```
+curl https://api.atptoken.ai/omni/media/v1/contents/generations/tasks \
+  -H "Authorization: Bearer atp-..." -H "Content-Type: application/json" \
+  -d '{
+    "model": "wan-3-0-video",
+    "prompt": "a paper boat drifting on still water",
+    "first_frame": "https://example.com/first-frame.png",
+    "resolution": "720P",
+    "ratio": "16:9",
+    "duration": 5,
+    "audio": false
+  }'
+# → 202 { "id": "task_..." }
+```
+
+| 栏位 | 可用值 | 说明 |
+| --- | --- | --- |
+| `prompt` | 字串 | 必填 |
+| `first_frame`、`last_frame` | 图片 URL | 首尾帧模式 |
+| `reference_images` | 最多 10 个 URL | 参考素材模式 |
+| `reference_videos`、`reference_audios` | 各最多 5 个 URL | 参考素材模式 |
+| `resolution` | 480P、720P、1080P；`-pro` 另有 2K、4K | 要大写 |
+| `duration` | 2–30 秒 | |
+| `ratio` | 16:9、9:16、4:3、3:4、1:1、adaptive | |
+| `audio` | 布林值 | 不是 `generate_audio` |
+
+同一个请求只能用首尾帧模式或参考素材模式，不能混用。送 `aspect_ratio`、`generate_audio`、`watermark` 或 `media` 会回 `400 Extra inputs are not permitted`。
+
 ## 错误
 
 - 400 — 请求内容格式错误。
@@ -251,5 +282,5 @@ curl https://api.atptoken.ai/omni/media/v1/tasks/cgt_... -H "Authorization: Bear
 ## 下一步
 
 - [Seedance 2.0](https://atptoken.ai/zh-cn/docs/seedance-2-0/) — `seedance-2-0` 的参数、媒体 role 与请求范例。
-- [/v1/files](https://atptoken.ai/zh-cn/docs/files/) — 上传文件并换成可引用的 URL。
+- [/v1/files](https://atptoken.ai/zh-cn/docs/files/) — 上传给 chat 与 messages 请求使用的文件。媒体任务无法使用。
 - [错误码](https://atptoken.ai/zh-cn/docs/errors/) — 每个状态码代表什么、先检查什么。

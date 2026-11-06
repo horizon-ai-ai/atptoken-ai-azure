@@ -33,6 +33,7 @@ Confirm names with `GET /v1/models`.
 | Alibaba (preview) | `happyhorse-1.1-t2v`, `happyhorse-1.1-i2v` | 3–15 s; watermark on by default (pass `watermark: false`) |
 | Alibaba (preview) | `happyhorse-1.1-r2v` | up to 9 reference images; 3–15 s; watermark on by default |
 | Alibaba (preview) | `happyhorse-1.0-video-edit` | source clip 3–60 s + up to 5 reference images; watermark on by default |
+| Alibaba (preview) | `wan-3-0-video`, `wan-3-0-video-pro` | flat request body, not `content[]`; see Wan 3.0 below |
 
 > **Check the model and project permission first**
 >
@@ -89,23 +90,19 @@ curl https://api.atptoken.ai/omni/media/v1/contents/generations/tasks \
 >
 > On the image endpoint, `asset://` references fail at generation time with `provider_error / generation_failed`.
 
-### Reference an uploaded file
+### Use a local file
 
-To reference something you uploaded, turn the upload into a public URL:
+A `/v1/files` upload cannot be the `url`: its `id` is not a media reference, and `GET /v1/files/{id}` returns the file's bytes, not a URL. Host the file at a public `https://` URL that the provider can fetch without authentication, then pass that URL:
 
 ```
-# 1. upload — the response key is `id` (an_<ULID>), not gw_file_id
-curl -s https://api.atptoken.ai/v1/files \
-  -H "Authorization: Bearer atp-..." -F "file=@./first-frame.png"
-# → 201 { "id": "an_01H...", "object": "file", "bytes": 152340, ... }
-
-# 2. resolve to a no-auth URL — read the 302 Location, do NOT follow it
-curl -sD - -o /dev/null https://api.atptoken.ai/v1/files/an_01H... \
-  -H "Authorization: Bearer atp-..." | grep -i '^location:'
-# → location: https://<object-store>/gateway-files/...?<presigned>  (~15-minute TTL)
+{
+  "type": "image_url",
+  "image_url": { "url": "https://example.com/first-frame.png" },
+  "role": "first_frame"
+}
 ```
 
-Use that `Location` value as the `url`. It needs no authentication, which is what the upstream provider requires — but it expires in about 15 minutes, so resolve it immediately before creating the task rather than caching it.
+On Seedance, you can also register that URL as an asset and pass the `asset://` URI, as the next section shows.
 
 ### Reference a registered asset
 
@@ -123,6 +120,8 @@ Seedance also takes an image registered through the asset API. Register the imag
 ```
 
 The URI goes only in `image_url.url`; the block has no top-level `url`. A `/v1/files` id is not an asset URI.
+
+A public URL of a photo of a real person can be rejected with `400 may contain real person`. Register the image as an asset and pass the `AssetUri` instead. `seedance-2-0-fast` takes direct URLs only, so do not use it for photos of real people.
 
 ## Poll until terminal
 
@@ -240,6 +239,38 @@ Per second of output at the requested resolution, metered as video tokens (`widt
 - **Prompt length**: 5,000 characters (HappyHorse: 2,500 for Chinese text).
 - `generate_audio` is not available on these models yet.
 
+### Wan 3.0 uses a flat body
+
+`wan-3-0-video` and `wan-3-0-video-pro` do not take `content[]`. Put the prompt and media in top-level fields. A `content` array is dropped, and a body left empty returns `missing_prompt_or_image`.
+
+```
+curl https://api.atptoken.ai/omni/media/v1/contents/generations/tasks \
+  -H "Authorization: Bearer atp-..." -H "Content-Type: application/json" \
+  -d '{
+    "model": "wan-3-0-video",
+    "prompt": "a paper boat drifting on still water",
+    "first_frame": "https://example.com/first-frame.png",
+    "resolution": "720P",
+    "ratio": "16:9",
+    "duration": 5,
+    "audio": false
+  }'
+# → 202 { "id": "task_..." }
+```
+
+| Field | Values | Notes |
+| --- | --- | --- |
+| `prompt` | string | required |
+| `first_frame`, `last_frame` | image URL | frame mode |
+| `reference_images` | up to 10 URLs | reference mode |
+| `reference_videos`, `reference_audios` | up to 5 URLs each | reference mode |
+| `resolution` | 480P, 720P, 1080P; `-pro` adds 2K, 4K | uppercase |
+| `duration` | 2–30 seconds | |
+| `ratio` | 16:9, 9:16, 4:3, 3:4, 1:1, adaptive | |
+| `audio` | boolean | not `generate_audio` |
+
+Use frame mode or reference mode in one request, not both. Sending `aspect_ratio`, `generate_audio`, `watermark`, or `media` returns `400 Extra inputs are not permitted`.
+
 ## Errors
 
 - 400 — invalid request body.
@@ -251,5 +282,5 @@ Per second of output at the requested resolution, metered as video tokens (`widt
 ## Next steps
 
 - [Seedance 2.0](https://atptoken.ai/docs/seedance-2-0/) — Parameters, media roles and request examples for `seedance-2-0`.
-- [/v1/files](https://atptoken.ai/docs/files/) — Upload a file and turn it into a reference URL.
+- [/v1/files](https://atptoken.ai/docs/files/) — Upload files for chat and messages requests. Media tasks cannot use them.
 - [Error codes](https://atptoken.ai/docs/errors/) — What each status code means and what to check first.
